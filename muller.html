@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Método de Muller</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .output {
+            margin-top: 20px;
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            overflow-y: auto;
+            max-height: 300px;
+        }
+
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Método de Muller</h1>
+        <p>Este programa realiza el método de Muller para encontrar una raíz de una función dada.</p>
+        
+        <!-- Entrada de datos -->
+        <label for="funcion">Función f(x) (en términos de x):</label>
+        <input type="text" id="funcion" placeholder="Ejemplo: Math.pow(x, 3) - 4 * x - 9">
+
+        <label for="x0">Primer valor inicial (x₀):</label>
+        <input type="number" id="x0" placeholder="Ejemplo: 1">
+
+        <label for="x1">Segundo valor inicial (x₁):</label>
+        <input type="number" id="x1" placeholder="Ejemplo: 2">
+
+        <label for="x2">Tercer valor inicial (x₂):</label>
+        <input type="number" id="x2" placeholder="Ejemplo: 3">
+
+        <label for="tolerancia">Error tolerado:</label>
+        <input type="number" id="tolerancia" step="0.0001" placeholder="Ejemplo: 0.0001">
+
+        <label for="maxIter">Máximo de iteraciones:</label>
+        <input type="number" id="maxIter" placeholder="Ejemplo: 50">
+
+        <button onclick="metodoMuller()">Ejecutar Método de Muller</button>
+
+        <!-- Resultados -->
+        <div class="output" id="output"></div>
+    </div>
+
+    <script>
+        function metodoMuller() {
+            // Capturar los valores de entrada
+            let funcionStr = document.getElementById('funcion').value;
+            let x0 = parseFloat(document.getElementById('x0').value);
+            let x1 = parseFloat(document.getElementById('x1').value);
+            let x2 = parseFloat(document.getElementById('x2').value);
+            let tolerancia = parseFloat(document.getElementById('tolerancia').value);
+            let maxIter = parseInt(document.getElementById('maxIter').value);
+            let output = document.getElementById('output');
+
+            // Limpiar resultados anteriores
+            output.innerHTML = '';
+
+            try {
+                // Convertir la función a un formato ejecutable
+                let f = (x) => eval(funcionStr);
+
+                // Mostrar la función ingresada
+                output.innerHTML += `<p><strong>Función ingresada:</strong> f(x) = ${funcionStr}</p>`;
+
+                let iteracion = 0;
+                let error = Infinity;
+                let xNuevo;
+
+                output.innerHTML += `<p>Iteraciones:</p><ul>`;
+
+                // Iterar hasta que el error sea menor que la tolerancia o se alcance el límite de iteraciones
+                while (error > tolerancia && iteracion < maxIter) {
+                    iteracion++;
+
+                    // Calcular los valores f(x0), f(x1), f(x2)
+                    let f0 = f(x0);
+                    let f1 = f(x1);
+                    let f2 = f(x2);
+
+                    // Calcular los coeficientes del polinomio cuadrático
+                    let h0 = x1 - x0;
+                    let h1 = x2 - x1;
+                    let d0 = (f1 - f0) / h0;
+                    let d1 = (f2 - f1) / h1;
+                    let d2 = (d1 - d0) / (h1 + h0);
+
+                    // Calcular la raíz de la ecuación cuadrática
+                    let discriminante = Math.pow(d1, 2) - 4 * d2 * f2;
+                    let raiz1 = x2 - ((2 * f2) / (d1 + Math.sqrt(discriminante)));
+                    let raiz2 = x2 - ((2 * f2) / (d1 - Math.sqrt(discriminante)));
+
+                    // Seleccionar la raíz más cercana
+                    xNuevo = (Math.abs(raiz1 - x2) < Math.abs(raiz2 - x2)) ? raiz1 : raiz2;
+
+                    // Calcular el error y verificar si se alcanzó la tolerancia
+                    error = Math.abs(xNuevo - x2);
+
+                    output.innerHTML += `<li>Iteración ${iteracion}: xₙ = ${xNuevo.toFixed(6)}, f(xₙ) = ${f(xNuevo).toFixed(6)}, error = ${error.toFixed(6)}</li>`;
+
+                    if (error < tolerancia) break;
+
+                    // Preparar para la siguiente iteración
+                    x0 = x1;
+                    x1 = x2;
+                    x2 = xNuevo;
+                }
+
+                output.innerHTML += `</ul>`;
+                if (error <= tolerancia) {
+                    output.innerHTML += `<p><strong>Raíz aproximada:</strong> ${xNuevo.toFixed(6)}</p>`;
+                    output.innerHTML += `<p><strong>Error:</strong> ${error.toFixed(6)}</p>`;
+                    output.innerHTML += `<p><strong>Iteraciones:</strong> ${iteracion}</p>`;
+                } else {
+                    output.innerHTML += `<p class="error">No se alcanzó la convergencia tras ${maxIter} iteraciones.</p>`;
+                }
+            } catch (err) {
+                output.innerHTML = `<p class="error">Error: ${err.message}. Verifica la función y los valores ingresados.</p>`;
+            }
+        }
+    </script>
+
+<div style="text-align: center;">
+    <button class="metodo-btn" onclick="window.location.href = 'index.html';">INICIO</button>
+</div>
+
+</body>
+</html>

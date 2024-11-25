@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Método de Bisección</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .output {
+            margin-top: 20px;
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            overflow-y: auto;
+            max-height: 300px;
+        }
+
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Método de Bisección</h1>
+        <p>Este programa realiza el método de bisección para encontrar una raíz de una función continua en un intervalo dado.</p>
+        
+        <!-- Entrada de datos -->
+        <label for="funcion">Función (en términos de x):</label>
+        <input type="text" id="funcion" placeholder="Ejemplo: Math.pow(x, 3) - 4*x - 9">
+
+        <label for="a">Intervalo inicial (a):</label>
+        <input type="number" id="a" placeholder="Ejemplo: 2">
+
+        <label for="b">Intervalo inicial (b):</label>
+        <input type="number" id="b" placeholder="Ejemplo: 3">
+
+        <label for="tolerancia">Error tolerado:</label>
+        <input type="number" id="tolerancia" step="0.0001" placeholder="Ejemplo: 0.0001">
+
+        <button onclick="metodoBiseccion()">Ejecutar Método de Bisección</button>
+
+        <!-- Resultados -->
+        <div class="output" id="output"></div>
+    </div>
+
+    <script>
+        function metodoBiseccion() {
+            // Capturar los valores de entrada
+            const funcionStr = document.getElementById('funcion').value;
+            const aInicial = parseFloat(document.getElementById('a').value);
+            const bInicial = parseFloat(document.getElementById('b').value);
+            const tolerancia = parseFloat(document.getElementById('tolerancia').value);
+            const output = document.getElementById('output');
+            
+            // Limpiar resultados anteriores
+            output.innerHTML = '';
+
+            try {
+                // Convertir la función a un formato ejecutable
+                const f = (x) => eval(funcionStr);
+
+                // Validar que f(a) y f(b) tengan signos opuestos
+                let a = aInicial, b = bInicial;
+                if (f(a) * f(b) >= 0) {
+                    output.innerHTML = `<p class="error">La función no cambia de signo en el intervalo [${a}, ${b}]. Intenta con otro intervalo.</p>`;
+                    return;
+                }
+
+                let iteracion = 0;
+                let c = a; // Inicializar el punto medio
+                let error = Infinity;
+
+                // Realizar iteraciones del método de bisección
+                output.innerHTML += `<p>Iteraciones:</p><ul>`;
+                while (error > tolerancia) {
+                    iteracion++;
+                    c = (a + b) / 2; // Calcular el punto medio
+
+                    // Verificar si c es la raíz o si el error es aceptable
+                    if (f(c) === 0 || (b - a) / 2 < tolerancia) {
+                        break;
+                    }
+
+                    // Decidir el nuevo intervalo
+                    if (f(c) * f(a) < 0) {
+                        b = c;
+                    } else {
+                        a = c;
+                    }
+
+                    error = Math.abs(b - a);
+                    output.innerHTML += `<li>Iteración ${iteracion}: c = ${c.toFixed(6)}, f(c) = ${f(c).toFixed(6)}, error = ${error.toFixed(6)}</li>`;
+                }
+                output.innerHTML += `</ul>`;
+                output.innerHTML += `<p><strong>Raíz aproximada:</strong> ${c.toFixed(6)}</p>`;
+                output.innerHTML += `<p><strong>Error:</strong> ${error.toFixed(6)}</p>`;
+                output.innerHTML += `<p><strong>Iteraciones:</strong> ${iteracion}</p>`;
+            } catch (err) {
+                output.innerHTML = `<p class="error">Error: ${err.message}. Verifica la función y los valores ingresados.</p>`;
+            }
+        }
+    </script>
+
+<div style="text-align: center;">
+    <button class="metodo-btn" onclick="window.location.href = 'index.html';">INICIO</button>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Métodos Numéricos</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Métodos Numéricos</h1>
+        <!-- Pantalla inicial con botones para seleccionar el método -->
+        <div id="pantalla-inicial">
+
+           
+
+
+            <button class="metodo-btn" onclick="window.location.href = 'biseccion.html';">METODO DE BÍSECCION</button>
+            <button class="metodo-btn" onclick="window.location.href = 'fijo.html';">PUNTO FIJO</button>
+            <button class="metodo-btn" onclick="window.location.href = 'NR.html';">NEWTON-RAPSON</button>
+            <button class="metodo-btn" onclick="window.location.href = 'muller.html';">MULLER</button>
+            <button class="metodo-btn" onclick="window.location.href = 'matrices.html';">MATRICES DE ROTACION</button>
+            
+          
+        </div>
+        
+        <!-- Secciones para cada método -->
+        <div id="biseccion" class="metodo">
+            <h2>Método de Bisección</h2>
+            <p>Aquí se explicará el método de bisección...</p>
+            <button onclick="ejecutarBiseccion()">Ejecutar Bisección</button>
+        </div>
+
+        <div id="punto-fijo" class="metodo">
+            <h2>Punto Fijo</h2>
+            <p>Aquí se explicará el método de punto fijo...</p>
+            <button onclick="ejecutarPuntoFijo()">Ejecutar Punto Fijo</button>
+        </div>
+
+        <div id="newton-rapson" class="metodo">
+            <h2>Método de Newton-Raphson</h2>
+            <p>Aquí se explicará el método de Newton-Raphson...</p>
+            <button onclick="ejecutarNewtonRaphson()">Ejecutar Newton-Raphson</button>
+        </div>
+
+        <div id="muller" class="metodo">
+            <h2>Método de Muller</h2>
+            <p>Aquí se explicará el método de Muller...</p>
+            <button onclick="ejecutarMuller()">Ejecutar Muller</button>
+        </div>
+
+        <div id="rotacion" class="metodo">
+            <h2>Matrices de Rotación</h2>
+            <p>Aquí se explicará el método de matrices de rotación...</p>
+            <button onclick="ejecutarRotacion()">Ejecutar Rotación</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

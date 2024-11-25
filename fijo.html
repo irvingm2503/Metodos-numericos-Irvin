@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Método de Punto Fijo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        h1, h2 {
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .output {
+            margin-top: 20px;
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            overflow-y: auto;
+            max-height: 300px;
+        }
+
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Método de Punto Fijo</h1>
+        <p>Este programa realiza el método de punto fijo para encontrar una raíz de una función.</p>
+        
+        <!-- Entrada de datos -->
+        <label for="funcion">Función g(x) (en términos de x):</label>
+        <input type="text" id="funcion" placeholder="Ejemplo: Math.pow(x, 2) - 2">
+
+        <label for="x0">Valor inicial (x₀):</label>
+        <input type="number" id="x0" placeholder="Ejemplo: 1.5">
+
+        <label for="tolerancia">Error tolerado:</label>
+        <input type="number" id="tolerancia" step="0.0001" placeholder="Ejemplo: 0.0001">
+
+        <label for="maxIter">Máximo de iteraciones:</label>
+        <input type="number" id="maxIter" placeholder="Ejemplo: 50">
+
+        <button onclick="metodoPuntoFijo()">Ejecutar Método de Punto Fijo</button>
+
+        <!-- Resultados -->
+        <div class="output" id="output"></div>
+    </div>
+
+    <script>
+        function metodoPuntoFijo() {
+            // Capturar los valores de entrada
+            const funcionStr = document.getElementById('funcion').value;
+            const x0 = parseFloat(document.getElementById('x0').value);
+            const tolerancia = parseFloat(document.getElementById('tolerancia').value);
+            const maxIter = parseInt(document.getElementById('maxIter').value);
+            const output = document.getElementById('output');
+            
+            // Limpiar resultados anteriores
+            output.innerHTML = '';
+
+            try {
+                // Convertir la función a un formato ejecutable
+                const g = (x) => eval(funcionStr);
+
+                let xPrev = x0;
+                let xNext;
+                let iteracion = 0;
+                let error = Infinity;
+
+                output.innerHTML += `<p>Iteraciones:</p><ul>`;
+
+                // Iterar hasta que el error sea menor que la tolerancia o se alcance el límite de iteraciones
+                while (error > tolerancia && iteracion < maxIter) {
+                    iteracion++;
+                    xNext = g(xPrev);
+                    error = Math.abs(xNext - xPrev);
+
+                    output.innerHTML += `<li>Iteración ${iteracion}: xₙ = ${xNext.toFixed(6)}, error = ${error.toFixed(6)}</li>`;
+
+                    if (error < tolerancia) break;
+
+                    xPrev = xNext;
+                }
+
+                output.innerHTML += `</ul>`;
+                if (error <= tolerancia) {
+                    output.innerHTML += `<p><strong>Raíz aproximada:</strong> ${xNext.toFixed(6)}</p>`;
+                    output.innerHTML += `<p><strong>Error:</strong> ${error.toFixed(6)}</p>`;
+                    output.innerHTML += `<p><strong>Iteraciones:</strong> ${iteracion}</p>`;
+                } else {
+                    output.innerHTML += `<p class="error">No se alcanzó la convergencia tras ${maxIter} iteraciones.</p>`;
+                }
+            } catch (err) {
+                output.innerHTML = `<p class="error">Error: ${err.message}. Verifica la función y los valores ingresados.</p>`;
+            }
+        }
+    </script>
+
+<div style="text-align: center;">
+    <button class="metodo-btn" onclick="window.location.href = 'index.html';">INICIO</button>
+</div>
+
+</body>
+</html>
